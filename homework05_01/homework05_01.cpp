@@ -15,8 +15,8 @@ public:
 
 	Animal(Animal& a) { //복사 생성자
 		age = a.age;
-		name = new char[strlen(a.name) + 1];
-		strcpy(name, a.name);
+		name = new char[strlen(a.name) + 1];	// a.name의 길이와 같은 배열을 생성
+		strcpy(name, a.name);					// a.name 자체를 복사
 	}
 	void changeName(const char* newName) {
 		strcpy(name, newName);
