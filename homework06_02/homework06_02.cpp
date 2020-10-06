@@ -12,13 +12,13 @@ public:
 	void showName() {
 		std::cout << "Name is " << name << std::endl;
 	}
+
+	//operator+ 추가하세요
 	Animal operator+(const Animal& a) {
 		Animal temp;
 		temp = this->name + a.name;
 		return temp;
 	}
-	//operator+ 추가하세요
-
 };
 
 int main() {
