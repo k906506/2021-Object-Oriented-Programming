@@ -14,7 +14,7 @@ public:
 	}
 
 	Animal& operator+(const Animal& a) {
-		name += a.name;
+		this->name += a.name;
 		return *this;
 	}
 };
