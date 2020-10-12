@@ -10,7 +10,13 @@ public:
 	std::string getAnyString() {
 		return "Stored String :: " + anyString;
 	}
+	friend std::ostream& operator<<(std::ostream& os, const AnyString& a);
 };
+
+std::ostream& operator<<(std::ostream& os, const AnyString& a) {
+	os << a.anyString;
+	return os;
+}
 
 int main() {
 	std::ofstream out("testOveroding.txt");
