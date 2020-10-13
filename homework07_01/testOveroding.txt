@@ -1,1 +1,1 @@
-Stored String :: Hello, this is operator overloading test!!!
+Hello, this is operator overloading test!!!
