@@ -37,7 +37,6 @@ public:
 };
 
 int main() {
-
 	Employee** employeelist = new Employee * [6];
 
 	employeelist[0] = new Manager(200, "James", 33);
