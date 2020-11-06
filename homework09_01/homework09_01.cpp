@@ -11,12 +11,13 @@ public:
 
     //Unary operator
     int operator++(int) { //postfix operation (indicated by dummy 'int')
-        return number++;
+        int temp = number;
+        number++;
+        return temp;
     }
     int operator++() { //prefix operation
         return ++number;
     }
-
     friend std::ostream& operator<<(std::ostream&, MyData&);
 };
 
