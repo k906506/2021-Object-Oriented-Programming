@@ -12,8 +12,8 @@ public:
 
 class Dog : public Animal {
 protected:
-	string purpose;
-	string country;
+	string purpose;		//목적
+	string country;		//출생지
 public:
 	Dog(string name, string kind, string purpose, string country) : purpose(purpose), country(country), Animal(name, kind) {}
 	virtual void showInfo1() { cout << "Name : " << name << " / Kind : " << kind << endl; }
