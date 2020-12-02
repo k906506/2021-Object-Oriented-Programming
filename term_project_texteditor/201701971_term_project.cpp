@@ -82,6 +82,15 @@ public:
 
 class evaluteParameter {
 public:
+	bool evalutePrevNextParameter(string userWork) {
+		if (userWork.size() == 1) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	bool evaluteInsertParameter(string& userWork) {
 		if (userWork.size() >= 8) {	// i ( 1 , 2 , a )
 			userWork.erase(userWork.begin());
@@ -394,31 +403,47 @@ int main() {
 	while (userWork[0] != 't') {
 		switch (userWork[0]) {
 		case 'n':	// 다음 페이지 출력
-			if (!lastPage) {
-				message.printNextPage(textLine, lineIndex, firstPage, lastPage);
-				pageNumber++;
+			if (checkParameter.evalutePrevNextParameter(userWork)) {
+				if (!lastPage) {
+					message.printNextPage(textLine, lineIndex, firstPage, lastPage);
+					pageNumber++;
+				}
+				else {
+					message.consoleMessage("This is the Last Page");
+					firstPage = false;
+				}
+				message.printLineAndMenu();
+				getline(cin, userWork);
+				message.printInputAndLine(userWork);
 			}
 			else {
-				message.consoleMessage("This is the Last Page");
-				firstPage = false;
+				message.consoleErrorMessage();
+				message.printLineAndMenu();
+				getline(cin, userWork);
+				message.printInputAndLine(userWork);
 			}
-			message.printLineAndMenu();
-			getline(cin, userWork);
-			message.printInputAndLine(userWork);
 			break;
 
 		case 'p':	// 이전 페이지 출력
-			if (!firstPage) {
-				message.printPrevPage(textLine, lineIndex, firstPage, lastPage);
-				pageNumber--;
+			if (checkParameter.evalutePrevNextParameter(userWork)) {
+				if (!firstPage) {
+					message.printPrevPage(textLine, lineIndex, firstPage, lastPage);
+					pageNumber--;
+				}
+				else {
+					message.consoleMessage("This is the First Page");
+					lastPage = false;
+				}
+				message.printLineAndMenu();
+				getline(cin, userWork);
+				message.printInputAndLine(userWork);
 			}
 			else {
-				message.consoleMessage("This is the First Page");
-				lastPage = false;
+				message.consoleErrorMessage();
+				message.printLineAndMenu();
+				getline(cin, userWork);
+				message.printInputAndLine(userWork);
 			}
-			message.printLineAndMenu();
-			getline(cin, userWork);
-			message.printInputAndLine(userWork);
 			break;
 
 		case 'i':	// 삽입
