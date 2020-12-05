@@ -305,6 +305,7 @@ public:
 	}
 };
 
+// 특정 기능을 수행하는 클래스
 class textWork {
 private:
 	int checkIndex;
@@ -341,7 +342,7 @@ public:
 		}
 	}
 
-	int changeWord(string word1, string word2, vector <string>& textLine) {
+	int changeWord(string word1, string word2, vector <string>& textLine) {	// word1을 word2로 변경
 		findCount = 0;
 		for (int i = 0; i < (int)textLine.size(); i++) {
 			checkIndex = textLine[i].find(word1);
@@ -351,20 +352,20 @@ public:
 			}
 		}
 		if (findCount != 0) {
-			return 0;
+			return 0;	// 정상종료
 		}
 		else {
-			return -1;
+			return -1;	// 비정상종료
 		}
 	}
 
-	int findStringReturnIndex(vector <string> textLine, string findWord) {
+	int findStringReturnIndex(vector <string> textLine, string findWord) {	// findWord를 탐색
 		for (int i = 0; i < (int)textLine.size(); i++) {
 			if (textLine[i].find(findWord) != string::npos) {
-				return i;
+				return i;	// index 값 리턴
 			}
 		}
-		return -1;	// 해당 문자열이 존재하지 않는 경우
+		return -1;	// 비정상종료
 	}
 };
 
