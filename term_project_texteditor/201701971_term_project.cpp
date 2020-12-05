@@ -19,8 +19,11 @@ public:
 	void printLineAndMenu() {	// 메뉴와 간격줄을 함께 출력
 		cout << workMenu << "\n" << workSpace << endl;
 	}
-	void printInputAndLine(string input) {	// input을 간격줄과 함께 출력
-		cout << "입력 : " << input << "\n" << workSpace << endl;
+	void printInput() {	// 입력 메세지 출력
+		cout << "입력 : " << endl;
+	}
+	void printLine() {	// 간격줄 출력
+		cout << workSpace << endl;
 	}
 	void consoleMessage(string message) {	// message를 간격줄과 함께 출력
 		cout << message << "\n" << workSpace << endl;
@@ -71,7 +74,7 @@ public:
 	}
 
 	// 현재 페이지를 출력하는 함수
-	void printPage(vector <string> textLine, int& lineIndex, bool& firstPage, bool& lastPage) {
+	void printPage(vector <string> textLine, int& lineIndex, bool& lastPage) {
 		for (int i = lineIndex; i < lineIndex + 20; i++) {
 			cout << setw(2) << i + 1 << "| " << textLine[i] << endl;
 			if (i == textLine.size() - 1) { // 마지막 줄인 경우
@@ -79,7 +82,6 @@ public:
 				break;
 			}
 		}
-		firstPage = false;
 		cout << workSpace << endl;
 	}
 };
@@ -231,7 +233,6 @@ public:
 	vector<vector<string>> changeStringToWord(vector <string> textLine) {	// 문장 단위를 단어 단위로
 		vector <vector <string>> changeStringToWord(textLine.size());
 		string stringBuffer;
-
 		for (int i = 0; i < (int)textLine.size(); i++) {	// 매개변수로 들어온 textLine만큼 반복문을 돌린다
 			string inputString = textLine[i];	// (lineIndex-1)번째 줄 문자열을 저장
 			stringstream s(inputString);
@@ -312,7 +313,7 @@ private:
 	int findCount;
 
 public:
-	int insertword(int lineIndex, int wordIndex, int pageNumber, int eofFile, string word, vector<vector <string>>& textWord) {	// ?번째 줄의 ?번째 뒤에 단어 삽입
+	int insertWord(int lineIndex, int wordIndex, int pageNumber, int eofFile, string word, vector<vector <string>>& textWord) {	// ?번째 줄의 ?번째 뒤에 단어 삽입
 		if (((lineIndex > 0 + pageNumber*20) & (lineIndex <= 20 + pageNumber*20)) & (wordIndex > 0) & (lineIndex <= eofFile)) {
 			if ((wordIndex - 1 < (int)textWord[lineIndex - 1].size()) & (wordIndex >= 1) & (word.size() <= 75)) {
 					textWord[lineIndex - 1].insert(textWord[lineIndex - 1].begin() + wordIndex, word);
@@ -327,7 +328,7 @@ public:
 		}
 	}
 
-	int deleteword(int lineIndex, int wordIndex, int pageNumber, int eofFile, vector<vector <string>>& textWord) {	// ?번째 줄의 ?번째 단어 삭제
+	int deleteWord(int lineIndex, int wordIndex, int pageNumber, int eofFile, vector<vector <string>>& textWord) {	// ?번째 줄의 ?번째 단어 삭제
 		if (((lineIndex > 0 + pageNumber * 20) & (lineIndex <= 20 + pageNumber * 20)) & (wordIndex > 0) & (lineIndex <= eofFile)) {
 			if ((wordIndex - 1 < (int)textWord[lineIndex - 1].size()) & (wordIndex >= 1)) {
 				textWord[lineIndex - 1].erase(textWord[lineIndex - 1].begin() + (wordIndex - 1));
@@ -402,11 +403,14 @@ int main() {
 	
 	textLine = inverttext.arrangeText(textWord);
 	eofFile = textLine.size();
-	message.printPage(textLine, lineIndex, firstPage, lastPage);
+	message.printPage(textLine, lineIndex, lastPage);
 	message.printLineAndMenu();
 
+	message.printInput();
 	getline(cin, userWork);
-	message.printInputAndLine(userWork);
+	message.printLine();
+
+	firstPage = true;
 
 	while (userWork[0] != 't') {
 		switch (userWork[0]) {
@@ -421,14 +425,16 @@ int main() {
 					firstPage = false;
 				}
 				message.printLineAndMenu();
+				message.printInput();
 				getline(cin, userWork);
-				message.printInputAndLine(userWork);
+				message.printLine();
 			}
 			else {
 				message.consoleErrorMessage();
 				message.printLineAndMenu();
+				message.printInput();
 				getline(cin, userWork);
-				message.printInputAndLine(userWork);
+				message.printLine();
 			}
 			break;
 
@@ -443,14 +449,16 @@ int main() {
 					lastPage = false;
 				}
 				message.printLineAndMenu();
+				message.printInput();
 				getline(cin, userWork);
-				message.printInputAndLine(userWork);
+				message.printLine();
 			}
 			else {
 				message.consoleErrorMessage();
 				message.printLineAndMenu();
+				message.printInput();
 				getline(cin, userWork);
-				message.printInputAndLine(userWork);
+				message.printLine();
 			}
 			break;
 
@@ -466,37 +474,41 @@ int main() {
 					lineIndex = temp;
 					message.consoleErrorMessage();
 					message.printLineAndMenu();
+					message.printInput();
 					getline(cin, userWork);
-					message.printInputAndLine(userWork);
+					message.printLine();
 					break;
 				}
 				inputWord = inputUser[2];
 				stwWord = inverttext.changeStringToWord(textLine);
-				if (textwork.insertword(lineIndex, wordIndex, pageNumber, eofFile, inputWord, stwWord) == 0) {	// 정상적으로 삽입
+				if (textwork.insertWord(lineIndex, wordIndex, pageNumber, eofFile, inputWord, stwWord) == 0) {	// 정상적으로 삽입
 					wtsString = inverttext.changeWordToString(stwWord);	// 단어 단위를 문장 단위로
 					stcChar = inverttext.changeStringToChar(wtsString);	// 문장 단위를 1바이트 단위로
 					textLine = inverttext.arrangeText(stcChar);	// 75바이트 단위로
 					eofFile = textLine.size();
 					lineIndex = temp;
-					message.printPage(textLine, lineIndex, firstPage, lastPage);
+					message.printPage(textLine, lineIndex, lastPage);
 					message.printLineAndMenu();
+					message.printInput();
 					getline(cin, userWork);
-					message.printInputAndLine(userWork);
+					message.printLine();
 				}
 				else {	// 다시
 					lineIndex = temp;
 					message.consoleErrorMessage();
 					message.printLineAndMenu();
+					message.printInput();
 					getline(cin, userWork);
-					message.printInputAndLine(userWork);
+					message.printLine();
 				}
 			}
 			else {
 				lineIndex = temp;
 				message.consoleErrorMessage();
 				message.printLineAndMenu();
+				message.printInput();
 				getline(cin, userWork);
-				message.printInputAndLine(userWork);
+				message.printLine();
 			}
 			break;
 
@@ -512,35 +524,39 @@ int main() {
 					lineIndex = temp;
 					message.consoleErrorMessage();
 					message.printLineAndMenu();
+					message.printInput();
 					getline(cin, userWork);
-					message.printInputAndLine(userWork);
+					message.printLine();
 				}
 				stwWord = inverttext.changeStringToWord(textLine);	// 문장 단위를 단어 단위로
-				if (textwork.deleteword(lineIndex, wordIndex, pageNumber, eofFile, stwWord) == 0) {	// 정상적으로 삭제
+				if (textwork.deleteWord(lineIndex, wordIndex, pageNumber, eofFile, stwWord) == 0) {	// 정상적으로 삭제
 					wtsString = inverttext.changeWordToString(stwWord);	// 단어 단위를 문장 단위로
 					stcChar = inverttext.changeStringToChar(wtsString);	// 문장 단위를 1바이트 단위로
 					textLine = inverttext.arrangeText(stcChar);	// 75바이트 단위로
 					eofFile = textLine.size();
 					lineIndex = temp;
-					message.printPage(textLine, lineIndex, firstPage, lastPage);
+					message.printPage(textLine, lineIndex, lastPage);
 					message.printLineAndMenu();
+					message.printInput();
 					getline(cin, userWork);
-					message.printInputAndLine(userWork);
+					message.printLine();
 				}
 				else {
 					lineIndex = temp;
 					message.consoleErrorMessage();
 					message.printLineAndMenu();
+					message.printInput();
 					getline(cin, userWork);
-					message.printInputAndLine(userWork);
+					message.printLine();
 				}
 			}
 			else {
 				lineIndex = temp;
 				message.consoleErrorMessage();
 				message.printLineAndMenu();
+				message.printInput();
 				getline(cin, userWork);
-				message.printInputAndLine(userWork);
+				message.printLine();
 			}
 			break;
 
@@ -551,23 +567,26 @@ int main() {
 				if (changeWordCheck == 0) {
 					stcChar = inverttext.changeStringToChar(textLine);	// 문장 단위를 1바이트 단위로
 					textLine = inverttext.arrangeText(stcChar);	// 75바이트 단위로
-					message.printPage(textLine, lineIndex, firstPage, lastPage);
+					message.printPage(textLine, lineIndex, lastPage);
 					message.printLineAndMenu();
+					message.printInput();
 					getline(cin, userWork);
-					message.printInputAndLine(userWork);
+					message.printLine();
 				}
 				else {
 					message.consoleMessage("No Exist Word");
 					message.printLineAndMenu();
+					message.printInput();
 					getline(cin, userWork);
-					message.printInputAndLine(userWork);
+					message.printLine();
 				}
 			}
 			else {
 				message.consoleErrorMessage();
 				message.printLineAndMenu();
+				message.printInput();
 				getline(cin, userWork);
-				message.printInputAndLine(userWork);
+				message.printLine();
 			}
 			break;
 
@@ -577,32 +596,36 @@ int main() {
 				temp = lineIndex;
 				lineIndex = textwork.findStringReturnIndex(textLine, findWord);
 				if (lineIndex != -1) {
-					message.printPage(textLine, lineIndex, firstPage, lastPage);
+					message.printPage(textLine, lineIndex, lastPage);
 					message.printLineAndMenu();
+					message.printInput();
 					getline(cin, userWork);
-					message.printInputAndLine(userWork);
+					message.printLine();
 				}
 				else {
 					lineIndex = temp;
 					message.consoleMessage("No Exist Word");
 					message.printLineAndMenu();
+					message.printInput();
 					getline(cin, userWork);
-					message.printInputAndLine(userWork);
+					message.printLine();
 				}
 			}
 			else {
 				message.consoleErrorMessage();
 				message.printLineAndMenu();
+				message.printInput();
 				getline(cin, userWork);
-				message.printInputAndLine(userWork);
+				message.printLine();;
 			}
 			break;
 
 		default:// 오류 - 재입력
 			message.consoleErrorMessage();
 			message.printLineAndMenu();
+			message.printInput();
 			getline(cin, userWork);
-			message.printInputAndLine(userWork);
+			message.printLine();
 			break;
 		}
 	}
