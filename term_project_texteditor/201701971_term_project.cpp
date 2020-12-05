@@ -8,6 +8,7 @@
 
 using namespace std;
 
+// 출력을 담당하는 클래스
 class Message {
 private:
 	string workMenu = "n:다음 페이지, p:이전 페이지, i:삽입, d:삭제, c:변경, s:찾기, t:저장 후 종료";
@@ -15,19 +16,20 @@ private:
 	int temp = 0;
 
 public:
-	void printLineAndMenu() {
+	void printLineAndMenu() {	// 메뉴와 간격줄을 함께 출력
 		cout << workMenu << "\n" << workSpace << endl;
 	}
-	void printInputAndLine(string input) {
+	void printInputAndLine(string input) {	// input을 간격줄과 함께 출력
 		cout << "입력 : " << input << "\n" << workSpace << endl;
 	}
-	void consoleMessage(string message) {
+	void consoleMessage(string message) {	// message를 간격줄과 함께 출력
 		cout << message << "\n" << workSpace << endl;
 	}
-	void consoleErrorMessage() {
+	void consoleErrorMessage() {	// error 메세지를 간격줄과 함께 출력
 		cout << "The input value is invalid." << "\n" << workSpace << endl;
 	}
 
+	// 이전 페이지를 출력하는 함수
 	void printPrevPage(vector <string> textLine, int& lineIndex, bool& firstPage, bool& lastPage) {
 		if (lineIndex >= 20) {	// 21번째 줄부터의 출력
 			lineIndex -= 20;
@@ -52,13 +54,14 @@ public:
 		cout << workSpace << endl;
 	}
 
+	// 다음 페이지를 출력하는 함수
 	void printNextPage(vector <string> textLine, int &lineIndex, bool& firstPage, bool& lastPage) {
-		if (lineIndex < (int)textLine.size() - 20) {
+		if (lineIndex < (int)textLine.size() - 20) { // 마지막 페이지를 제외한 나머지 페이지의 경우
 			lineIndex += 20;
 		}
 		for (int i = lineIndex; i < lineIndex + 20; i++) {
 			cout << setw(2) << i + 1 << "| " << textLine[i] << endl;
-			if (i == textLine.size()-1) {
+			if (i == textLine.size()-1) {	// 마지막 줄인 경우
 				lastPage = true;
 				break;
 			}
@@ -67,10 +70,11 @@ public:
 		cout << workSpace << endl;
 	}
 
+	// 현재 페이지를 출력하는 함수
 	void printPage(vector <string> textLine, int& lineIndex, bool& firstPage, bool& lastPage) {
 		for (int i = lineIndex; i < lineIndex + 20; i++) {
 			cout << setw(2) << i + 1 << "| " << textLine[i] << endl;
-			if (i == textLine.size() - 1) {
+			if (i == textLine.size() - 1) { // 마지막 줄인 경우
 				lastPage = true;
 				break;
 			}
@@ -80,143 +84,146 @@ public:
 	}
 };
 
+// 특정 기능에 따른 입력 값을 검증하는 클래스
 class evaluteParameter {
 public:
-	bool evalutePrevNextParameter(string userWork) {
-		if (userWork.size() == 1) {
-			return true;
+	bool evalutePrevNextParameter(string userWork) {	// 이전, 다음페이지 (p, n)
+		if (userWork.size() == 1) {	// p, n이 1글자씩만 입력됐을 때만 ok
+			return true;	// 정상종료
 		}
 		else {
-			return false;
+			return false;	// 비정상종료
 		}
 	}
 
-	bool evaluteInsertParameter(string& userWork) {
-		if (userWork.size() >= 8) {	// i ( 1 , 2 , a )
+	bool evaluteInsertParameter(string& userWork) {		// 삽입 (i)
+		if (userWork.size() >= 8) {	// i ( 1 , 2 , a ) - 최소 길이 8
 			userWork.erase(userWork.begin());
-			if ((userWork[0] == '(') & (userWork[userWork.size() - 1] == ')')) {
+			if ((userWork[0] == '(') & (userWork[userWork.size() - 1] == ')')) {	// 괄호로 둘러싸여 있는 경우에만 ok
 				for (int i = 0; i < (int)userWork.size(); i++) {
 					if (userWork[i] == ' ') {	// 공백은 무조건 오류
-						return false;
+						return false; // 비정상종료
 					}
 				}
-				return true;
+				return true;	// 정상종료
 			}
 			else {
-				return false;
+				return false;	// 비정상종료
 			}
 		}
 		else {
-			return false;
+			return false;	// 비정상종료
 		}
 	}
 
-	bool evaluteDeleteParameter(string& userWork) {
-		if (userWork.size() >= 6) {	// d ( 1 , 2 ) 
+	bool evaluteDeleteParameter(string& userWork) {		// 삭제 (d)
+		if (userWork.size() >= 6) {	// d ( 1 , 2 ) - 최소 길이 6
 			userWork.erase(userWork.begin());
-			if ((userWork[0] == '(') & (userWork[userWork.size() - 1] == ')')) {
+			if ((userWork[0] == '(') & (userWork[userWork.size() - 1] == ')')) {	// 괄호로 둘러싸여 있는 경우에만  ok
 				for (int i = 0; i < (int)userWork.size(); i++) {
 					if (userWork[i] == ' ') {	// 공백은 무조건 오류
-						return false;
+						return false;	// 비정상종료
 					}
 				}
-				return true;
+				return true;	// 정상종료
 			}
 			else {
-				return false;
+				return false;	// 비정상종료
 			}
 		}
 		else {
-			return false;
+			return false;	// 비정상종료
 		}
 	}
 
-	bool evaluteChangeParameter(string& userWork) {
-		if (userWork.size() >= 6) {	// d ( a , b )
+	bool evaluteChangeParameter(string& userWork) {		// 변경 (c)
+		if (userWork.size() >= 6) {	// c ( a , b ) - 최소 길이 6
 			userWork.erase(userWork.begin());
-			if ((userWork[0] == '(') & (userWork[userWork.size() - 1] == ')')) {
+			if ((userWork[0] == '(') & (userWork[userWork.size() - 1] == ')')) {	// 괄호로 둘러싸여 있는 경우에만 ok
 				for (int i = 0; i < (int)userWork.size(); i++) {
 					if (userWork[i] == ' ') {	// 공백은 무조건 오류
-						return false;
+						return false;	// 비정상종료
 					}
 				}
-				return true;
+				return true;	// 정상종료
 			}
 			else {
-				return false;
+				return false;	// 비정상종료
 			}
 		}
 		else {
-			return false;
+			return false;	// 비정상종료
 		}
 	}
 
-	bool evaluteSearchParameter(string& userWork) {
-		if (userWork.size() >= 4) {	// s ( a )
+	bool evaluteSearchParameter(string& userWork) {		// 검색 (s)
+		if (userWork.size() >= 4) {	// s ( a ) - 최소 길이 4
 			userWork.erase(userWork.begin());
-			if ((userWork[0] == '(') & (userWork[userWork.size() - 1] == ')')) {
+			if ((userWork[0] == '(') & (userWork[userWork.size() - 1] == ')')) {	// 괄호로 둘러싸여 있는 경우에만 ok
 				for (int i = 0; i < (int)userWork.size(); i++) {
 					if (userWork[i] == ' ') {	// 공백은 무조건 오류
-						return false;
+						return false;	// 비정상종료
 					}
 				}
-				return true;
+				return true;	// 정상종료
 			}
 			else {
-				return false;
+				return false;	// 비정상종료
 			}
 		}
 		else {
-			return false;
+			return false;	// 비정상종료
 		}
 	}
 };
 
+// 특정 기능에 따른 입력 값을 필요항목만 분리하는 클래스
 class splitParameter {
 private:
 	string stringBuffer;
 public:
 	vector <string> findThreeParameter(string userWork) {	// 입력인자가 3개 일 때
-		userWork = userWork.replace(userWork.find("("), 1, "");
-		userWork = userWork.replace(userWork.find(")"), 1, "");
+		userWork = userWork.replace(userWork.find("("), 1, "");		// ( 제거
+		userWork = userWork.replace(userWork.find(")"), 1, "");		// ) 제거
 
 		stringstream s(userWork);
 		vector <string> inputUser;
-		while (getline(s, stringBuffer, ',')) {
+		while (getline(s, stringBuffer, ',')) {		// 문자열을 ,로 분리
 			inputUser.push_back(stringBuffer);
 		}
-		return inputUser;
+		return inputUser;	// 분리된 문자열이 저장
 	}
 	vector <string> findTwoParameter(string userWork) {	// 입력인자가 2개 일 때
-		userWork = userWork.replace(userWork.find("("), 1, "");
-		userWork = userWork.replace(userWork.find(")"), 1, "");
+		userWork = userWork.replace(userWork.find("("), 1, "");		// ( 제거
+		userWork = userWork.replace(userWork.find(")"), 1, "");		// ) 제거
 
 		stringstream s(userWork);
 		vector <string> inputUser;
-		while (getline(s, stringBuffer, ',')) {
+		while (getline(s, stringBuffer, ',')) {		// 문자열을 ,로 분리
 			inputUser.push_back(stringBuffer);
 		}
-		return inputUser;
+		return inputUser;	// 분리된 문자열이 저장
 	}
 	string findOneParameter(string userWork) {	// 입력인자가 1개 일 때
-		userWork = userWork.replace(userWork.find("("), 1, "");
-		userWork = userWork.replace(userWork.find(")"), 1, "");
-		return userWork;
+		userWork = userWork.replace(userWork.find("("), 1, "");		// ( 제거	
+		userWork = userWork.replace(userWork.find(")"), 1, "");		// ) 제거
+		return userWork;	// ( ) 가 제거된 문자열이 저장
 	}
 };
 
+// 필요에 따라 단위에 맞게 문자를 저장하는 클래스 ( 단어 단위 > 문장 단위 / 문장 단위 > 단어 단위 / 문장 단위 > 1바이트 단위 / 75바이트 단위 )
 class invertText {
 public:
 	vector <string> changeWordToString(vector <vector<string>> textWord) {	// 단어 단위를 문장 단위로
 		vector <string> textLine;
 		string text;
-		for (int i = 0; i < (int)textWord.size(); i++) {
+		for (int i = 0; i < (int)textWord.size(); i++) {	// 매개변수로 들어온 textWord만큼 반복문을 돌린다
 			text = "";
 			for (int j = 0; j < (int)textWord[i].size(); j++) {
 				text += textWord[i][j];
-				text += ' ';
+				text += ' ';	// 단어마다 ' '를 추가한다
 			}
-			textLine.push_back(text);
+			textLine.push_back(text);	// 한 줄이 완성되면 textline에 저장한다
 		}
 		return textLine;
 	}
@@ -225,10 +232,10 @@ public:
 		vector <vector <string>> changeStringToWord(textLine.size());
 		string stringBuffer;
 
-		for (int i = 0; i < (int)textLine.size(); i++) {
+		for (int i = 0; i < (int)textLine.size(); i++) {	// 매개변수로 들어온 textLine만큼 반복문을 돌린다
 			string inputString = textLine[i];	// (lineIndex-1)번째 줄 문자열을 저장
 			stringstream s(inputString);
-			while (getline(s, stringBuffer, ' ')) {
+			while (getline(s, stringBuffer, ' ')) {		// ' '으로 문자열을 분리한다
 				changeStringToWord[i].push_back(stringBuffer);
 			}
 		}
