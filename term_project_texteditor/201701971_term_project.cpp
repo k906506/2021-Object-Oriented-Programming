@@ -87,9 +87,9 @@ public:
 };
 
 // 특정 기능에 따른 입력 값을 검증하는 클래스
-class evaluteParameter {
+class evaluateParameter {
 public:
-	bool evalutePrevNextParameter(string userWork) {	// 이전, 다음페이지 (p, n)
+	bool evaluatePrevNextParameter(string userWork) {	// 이전, 다음페이지 (p, n)
 		if (userWork.size() == 1) {	// p, n이 1글자씩만 입력됐을 때만 ok
 			return true;	// 정상종료
 		}
@@ -98,7 +98,7 @@ public:
 		}
 	}
 
-	bool evaluteInsertParameter(string& userWork) {		// 삽입 (i)
+	bool evaluateInsertParameter(string& userWork) {		// 삽입 (i)
 		if (userWork.size() >= 8) {	// i ( 1 , 2 , a ) - 최소 길이 8
 			userWork.erase(userWork.begin());
 			if ((userWork[0] == '(') & (userWork[userWork.size() - 1] == ')')) {	// 괄호로 둘러싸여 있는 경우에만 ok
@@ -118,7 +118,7 @@ public:
 		}
 	}
 
-	bool evaluteDeleteParameter(string& userWork) {		// 삭제 (d)
+	bool evaluateDeleteParameter(string& userWork) {		// 삭제 (d)
 		if (userWork.size() >= 6) {	// d ( 1 , 2 ) - 최소 길이 6
 			userWork.erase(userWork.begin());
 			if ((userWork[0] == '(') & (userWork[userWork.size() - 1] == ')')) {	// 괄호로 둘러싸여 있는 경우에만  ok
@@ -138,7 +138,7 @@ public:
 		}
 	}
 
-	bool evaluteChangeParameter(string& userWork) {		// 변경 (c)
+	bool evaluateChangeParameter(string& userWork) {		// 변경 (c)
 		if (userWork.size() >= 6) {	// c ( a , b ) - 최소 길이 6
 			userWork.erase(userWork.begin());
 			if ((userWork[0] == '(') & (userWork[userWork.size() - 1] == ')')) {	// 괄호로 둘러싸여 있는 경우에만 ok
@@ -158,7 +158,7 @@ public:
 		}
 	}
 
-	bool evaluteSearchParameter(string& userWork) {		// 검색 (s)
+	bool evaluateSearchParameter(string& userWork) {		// 검색 (s)
 		if (userWork.size() >= 4) {	// s ( a ) - 최소 길이 4
 			userWork.erase(userWork.begin());
 			if ((userWork[0] == '(') & (userWork[userWork.size() - 1] == ')')) {	// 괄호로 둘러싸여 있는 경우에만 ok
@@ -372,8 +372,8 @@ public:
 
 int main() {
 	Message message;
-	evaluteParameter checkParameter;
-	splitParameter splitpara;
+	evaluateParameter checkPara;
+	splitParameter splitPara;
 	textWork textwork;
 	invertText inverttext;
 	vector <char> textWord;
@@ -415,7 +415,7 @@ int main() {
 	while (userWork[0] != 't') {
 		switch (userWork[0]) {
 		case 'n':	// 다음 페이지 출력
-			if (checkParameter.evalutePrevNextParameter(userWork)) {
+			if (checkPara.evaluatePrevNextParameter(userWork)) {
 				if (!lastPage) {
 					message.printNextPage(textLine, lineIndex, firstPage, lastPage);
 					pageNumber++;
@@ -439,7 +439,7 @@ int main() {
 			break;
 
 		case 'p':	// 이전 페이지 출력
-			if (checkParameter.evalutePrevNextParameter(userWork)) {
+			if (checkPara.evaluatePrevNextParameter(userWork)) {
 				if (!firstPage) {
 					message.printPrevPage(textLine, lineIndex, firstPage, lastPage);
 					pageNumber--;
@@ -463,8 +463,8 @@ int main() {
 			break;
 
 		case 'i':	// 삽입
-			if (checkParameter.evaluteInsertParameter(userWork)) {
-				inputUser = splitpara.findThreeParameter(userWork);
+			if (checkPara.evaluateInsertParameter(userWork)) {
+				inputUser = splitPara.findThreeParameter(userWork);
 				temp = lineIndex;
 				try {
 					lineIndex = stoi(inputUser[0]);
@@ -513,8 +513,8 @@ int main() {
 			break;
 
 		case 'd':	// 삭제
-			if (checkParameter.evaluteDeleteParameter(userWork)) {
-				inputUser = splitpara.findTwoParameter(userWork);
+			if (checkPara.evaluateDeleteParameter(userWork)) {
+				inputUser = splitPara.findTwoParameter(userWork);
 				temp = lineIndex;
 				try {
 					lineIndex = stoi(inputUser[0]);
@@ -561,8 +561,8 @@ int main() {
 			break;
 
 		case 'c':	// 변경
-			if (checkParameter.evaluteChangeParameter(userWork)) {
-				inputUser = splitpara.findTwoParameter(userWork);
+			if (checkPara.evaluateChangeParameter(userWork)) {
+				inputUser = splitPara.findTwoParameter(userWork);
 				changeWordCheck = textwork.changeWord(inputUser[0], inputUser[1], textLine);
 				if (changeWordCheck == 0) {
 					stcChar = inverttext.changeStringToChar(textLine);	// 문장 단위를 1바이트 단위로
@@ -591,12 +591,15 @@ int main() {
 			break;
 
 		case 's':	// 찾기 (완료)
-			if (checkParameter.evaluteSearchParameter(userWork)) {
-				findWord = splitpara.findOneParameter(userWork);
+			if (checkPara.evaluateSearchParameter(userWork)) {
+				findWord = splitPara.findOneParameter(userWork);
 				temp = lineIndex;
 				lineIndex = textwork.findStringReturnIndex(textLine, findWord);
 				if (lineIndex != -1) {
 					message.printPage(textLine, lineIndex, lastPage);
+					if (lineIndex >= 20) {
+						firstPage = false;
+					}
 					message.printLineAndMenu();
 					message.printInput();
 					getline(cin, userWork);
